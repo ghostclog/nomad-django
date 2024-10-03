@@ -43,6 +43,9 @@ CUSTOM_APPS = [
     "direct_messages.apps.DirectMessagesConfig",
 ]
 
+THIRD_PARTY_APPS = [
+    "rest_framework",
+]
 
 SYSTEM_APPS = [
     "django.contrib.admin",
@@ -53,7 +56,8 @@ SYSTEM_APPS = [
     "django.contrib.staticfiles",
 ]
 
-INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS
+INSTALLED_APPS = SYSTEM_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
