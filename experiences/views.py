@@ -6,34 +6,34 @@ from .models import Perk
 from .serializers import PerkSerializer
 
 
-class Perks(APIView):
-    def get(self, request):
-        all_perks = Perk.objects.all()
-        serializer = PerkSerializer(all_perks, many=True)
+class Perks(APIView): #퍽들 전체 보기
+    def get(self, request): #얻기
+        all_perks = Perk.objects.all() # 모든 퍽 객체 호출
+        serializer = PerkSerializer(all_perks, many=True) # 가져온 퍽 객체들을 직렬화 / 추가 파리미터로 many를 true로 줌
         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = PerkSerializer(data=request.data)
-        if serializer.is_valid():
-            perk = serializer.save()
+    def post(self, request): #추가
+        serializer = PerkSerializer(data=request.data) # 요청 데이터를 직렬화하고
+        if serializer.is_valid(): # 직렬화 한 데이터가 유효한지 체크
+            perk = serializer.save() # 유효하면 저장
             return Response(PerkSerializer(perk).data)
         else:
-            return Response(serializer.errors)
+            return Response(serializer.errors) # 아니면 유효하지 않는 영역에 대해 에러를 발생
 
 
-class PerkDetail(APIView):
-    def get_object(self, pk):
+class PerkDetail(APIView): #퍽 상세 보기
+    def get_object(self, pk): # 퍽 단일 객체 얻기
         try:
             return Perk.objects.get(pk=pk)
         except Perk.DoesNotExist:
             raise NotFound
 
-    def get(self, request, pk):
+    def get(self, request, pk): # 퍽 정보 얻기
         perk = self.get_object(pk)
         serializer = PerkSerializer(perk)
         return Response(serializer.data)
 
-    def put(self, request, pk):
+    def put(self, request, pk): # 퍽 정보 수정
         perk = self.get_object(pk)
         serializer = PerkSerializer(perk, data=request.data, partial=True)
         if serializer.is_valid():
