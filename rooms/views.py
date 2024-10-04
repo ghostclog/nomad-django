@@ -120,6 +120,28 @@ class RoomDetail(APIView):
         if room.owner != request.user:
             raise PermissionDenied
         # your magic
+        amenities = request.data.get("amenities")
+        amenities_list = []
+        print(amenities)
+        for amenity_pk in amenities:
+            try:
+                amenity = Amenity.objects.get(pk = amenity_pk["pk"])
+                amenities_list.append(amenity)
+            except:
+                raise NotFound
+        kind = request.data.get("kind")
+        if kind in Room.RoomKindChoices:
+            serializer = RoomDetailSerializer(
+                room,
+                data=request.data,
+                partial=True,
+            )
+            if serializer.is_valid():
+                room = serializer.save()
+                room.amenities.set(amenities_list)
+                return Response(serializer.data)
+        else:
+            raise ParseError("no 'Kind'")
 
     def delete(self, request, pk):
         room = self.get_object(pk)
